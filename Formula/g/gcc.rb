@@ -74,6 +74,11 @@ class Gcc < Formula
     # GCC will suffer build errors if forced to use a particular linker.
     ENV.delete "LD"
 
+    # Avoid rpath issue with m2rte.dylib
+    # https://github.com/GMAO-SI-Team/geosesm-spack/issues/2
+    inreplace "gcc/m2/Make-lang.in", "-Wl,-install_name,m2rte$(soext)",
+                                     "-Wl,-install_name,$(DARWIN_RPATH)/m2rte$(soext)"
+
     # We avoiding building:
     #  - Ada and D, which require a pre-existing GCC to bootstrap
     #  - Cobol, not fully stable yet
